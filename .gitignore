@@ -1,5 +1,27 @@
-node_modules/
-__pycache__/
-.env
+# --- SYSTEM JUNK ---
 .DS_Store
-venv/
+Thumbs.db
+
+# --- BACKEND (Python) ---
+backend/venv/
+backend/__pycache__/
+backend/*.pyc
+backend/uploads/*
+# Keep the folder, ignore the files
+!backend/uploads/.gitkeep 
+# SECRETS (CRITICAL)
+backend/.env
+
+# --- FRONTEND (Next.js) ---
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/build/
+frontend/.env
+frontend/.env.local
+frontend/npm-debug.log
+frontend/yarn-error.log
+
+# --- IDE SETTINGS ---
+.vscode/
+.idea/

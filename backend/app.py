@@ -16,7 +16,7 @@ CORS(app)
 UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-# 1. REAL IPFS UPLOAD (Pinata)
+
 def upload_to_ipfs(file_path):
     url = "https://api.pinata.cloud/pinning/pinFileToIPFS"
     headers = {
@@ -30,15 +30,12 @@ def upload_to_ipfs(file_path):
             return response.json()['IpfsHash']
         return None
 
-# 2. REAL TEXT EXTRACTION
 def extract_text_from_pdf(file_path):
     reader = PdfReader(file_path)
     text = ""
     for page in reader.pages:
         text += page.extract_text()
-    return text[:6000] # Limit characters for AI context window
-
-# 3. REAL AI ANALYSIS (Groq / Llama 3)
+    return text[:6000] 
 def analyze_with_groq(text):
     client = Groq(api_key=os.getenv("GROQ_API_KEY"))
     
@@ -56,7 +53,7 @@ def analyze_with_groq(text):
     """
     
     completion = client.chat.completions.create(
-        model="llama3-70b-8192",
+        model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
         temperature=0,
     )
@@ -66,7 +63,7 @@ def analyze_with_groq(text):
     except:
         return {"bond_name": "Unknown", "isin": "Unknown", "yield_rate": 0, "risk_rating": "Unknown"}
 
-# 4. HASHING (Trust Layer)
+
 def generate_sha256(file_path):
     sha256_hash = hashlib.sha256()
     with open(file_path, "rb") as f:
@@ -83,21 +80,20 @@ def analyze_bond():
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(file_path)
 
-    # A. Generate Hash
     doc_hash = generate_sha256(file_path)
     
-    # B. Upload to IPFS
+
     print("Uploading to IPFS...")
     ipfs_cid = upload_to_ipfs(file_path)
     if not ipfs_cid:
         return jsonify({"error": "IPFS Upload Failed"}), 500
 
-    # C. Extract Text & Analyze with AI
+ 
     print("Analyzing with Llama 3...")
     pdf_text = extract_text_from_pdf(file_path)
     ai_data = analyze_with_groq(pdf_text)
 
-    # Normalize Yield for Blockchain (7.2% -> 720)
+
     blockchain_yield = int(float(ai_data.get('yield_rate', 0)) * 100)
 
     return jsonify({
