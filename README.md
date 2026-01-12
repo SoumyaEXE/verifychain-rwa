@@ -1,14 +1,14 @@
 # 🏦 VerifyChain RWA
-### East-India's Largest Blockchain Hackathon Project on Celo.
+### East India Blockchain Summit 2.0
 
 **VerifyChain RWA** is a decentralized Real World Asset (RWA) tokenization platform that brings transparency, security, and automation to bond trading. It leverages **AI Agents** to verify legal documents, **IPFS** for immutable storage, and **Smart Contracts** for compliance-enforced tokenization.
 
 ---
 
 ## 🚀 Live Demo & Links
-- **Frontend Deployed URL**: [Click Here](https://your-frontend-link.com)
-- **Backend API URL**: [Click Here](https://your-backend-link.com)
-- **Smart Contract Address**: `0x0000000000000000000000000000000000000000` (Celo Alfajores)
+- **Frontend Deployed URL**: [Click Here](https://verifychain-kappa.vercel.app/)
+- **Backend API URL**: [Click Here](https://verifychain-rwa.onrender.com)
+- **Smart Contract Address**: `0x919F737bb0C39c05c459a20A2FaB26035E9734f3` (Celo Alfajores)
 - **YouTube Walkthrough**: [Watch Video](https://youtube.com/...)
 
 ---
@@ -57,7 +57,7 @@ The system consists of three main pillars:
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/your-username/VerifyChain_RWA.git
+git clone https://github.com/Srizdebnath/VerifyChain_RWA.git
 cd VerifyChain_RWA
 ```
 
@@ -156,4 +156,4 @@ Located in `contracts/VerifyChainRWA.sol`.
 
 ---
 
-### Built with ❤️ by Team Khasta Kochuri
+### Built by Team **LowEnd Corp.**
