@@ -67,7 +67,7 @@ export default function Home() {
 
     try {
       addLog("Sending to Python Secure Backend...");
-      const res = await axios.post("http://localhost:5000/analyze_bond", formData);
+      const res = await axios.post("https://verifychain-rwa.onrender.com/analyze_bond", formData);
       
       addLog(`AI Analysis Complete: Found ${res.data.ai_data.bond_name}`);
       addLog(`Yield Detected: ${res.data.ai_data.raw_yield}%`);
