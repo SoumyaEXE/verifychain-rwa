@@ -57,7 +57,7 @@ The system consists of three main pillars:
 
 ### 1️⃣ Clone the Repository
 ```bash
-git clone https://github.com/Srizdebnath/VerifyChain_RWA.git
+git clone https://github.com/Srizdebnath/verifychain-rwa
 cd VerifyChain_RWA
 ```
 
