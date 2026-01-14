@@ -12,14 +12,11 @@ import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Terminal from "../components/Terminal";
 
-// --- CONFIGURATION ---
-// This matches the address you put in your Python Backend
 const CONTRACT_ADDRESS = "0xb7aD889a0B6CD22c6869764219eB66443C70d839";
 
 const ABI = [
-  // Create Asset (Minting the Bond Definition)
+ 
   "function createAsset(string _name, string _isin, uint256 _faceValue, string _ipfsHash) public",
-  // Read Data
   "function nextBondId() public view returns (uint256)",
   "function bonds(uint256) public view returns (string name, string isin, uint256 faceValue, uint256 currentYield, uint256 lastUpdate, string ipfsHash, bool isActive)"
 ];
@@ -35,18 +32,17 @@ export default function Home() {
 
   const addLog = (msg: string) => setLogs(prev => [...prev, msg]);
 
-  // --- FETCH REGISTRY DATA ---
   const fetchRegistry = async () => {
     if (!window.ethereum) return;
     try {
       const provider = new ethers.BrowserProvider(window.ethereum);
       const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
 
-      // Safety check for fresh deployments
+      
       try {
         const count = await contract.nextBondId();
         let tempRegistry = [];
-        // Fetch last 3 bonds
+       
         for (let i = Number(count); i > Math.max(0, Number(count) - 3); i--) {
           const bond = await contract.bonds(i);
           tempRegistry.push({
@@ -71,7 +67,7 @@ export default function Home() {
     fetchRegistry();
   }, [signer]);
 
-  // 1. ANALYZE (Calls Python Real-Data Backend)
+
   const handleAnalyze = async () => {
     if (!file) return toast.error("Select a file first");
     setLoading(true);
@@ -84,18 +80,15 @@ export default function Home() {
     formData.append("file", file);
 
     try {
-      // Calls your local Python with Yahoo Finance + Llama 3
-      const res = await axios.post("http://localhost:5000/analyze_and_oracle", formData);
+     
+      const res = await axios.post("https://verifychain-rwa.onrender.com/analyze_and_oracle", formData);
 
       const analysis = res.data.ai_analysis;
       const oracle = res.data.oracle_data;
 
-      // LOGIC: Simulation of the 5 Pillars
       addLog(`[AI] Extracted Metadata: ${analysis.bond_name}`);
       setTrustScore(20);
       await new Promise(r => setTimeout(r, 500));
-
-      // Pillar 2: Proof of Reserve (Face Value Check)
       addLog(`[PoR] Document Face Value: $${parseInt(analysis.face_value_amount || 0).toLocaleString()}`);
       if (analysis.face_value_amount > 0) {
         addLog(`[PoR] Reserve Limit Established.`);
@@ -105,13 +98,13 @@ export default function Home() {
       }
       await new Promise(r => setTimeout(r, 500));
 
-      // Pillar 3: Oracle Check
+      
       addLog(`[Oracle] Connection to Yahoo Finance API...`);
       addLog(`[Oracle] Real-Time 10Y Yield: ${oracle.live_yield}%`);
       setTrustScore(80);
       await new Promise(r => setTimeout(r, 500));
 
-      // Pillar 4: Security
+      
       addLog(`[Audit] Contract: ${CONTRACT_ADDRESS.slice(0, 6)}... verified.`);
       setTrustScore(100);
 
@@ -124,7 +117,7 @@ export default function Home() {
     setLoading(false);
   };
 
-  // 2. MINT (Calls Celo Blockchain)
+  
   const handleMint = async () => {
     if (!signer) return toast.error("Connect Wallet First");
     const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
@@ -133,12 +126,12 @@ export default function Home() {
     try {
       addLog("Requesting Wallet Signature...");
 
-      // We use createAsset which sets the Face Value (Reserve Cap)
+    
       const tx = await contract.createAsset(
         aiData.ai_analysis.bond_name || "Unknown Bond",
         aiData.ai_analysis.isin || "UNKN",
-        aiData.ai_analysis.face_value_amount || 1000000, // Default if AI fails
-        "QmMockHashForDemo" // In prod, use the IPFS hash from backend
+        aiData.ai_analysis.face_value_amount || 1000000, 
+        "QmMockHashForDemo" 
       );
 
       addLog(`Transaction Sent: ${tx.hash}`);
@@ -154,7 +147,7 @@ export default function Home() {
     }
   };
 
-  // 3. KYC SIM (Client Side Simulation for Demo)
+  
   const handleKYC = async () => {
     if (!signer) return toast.error("Connect Wallet First");
     const userAddr = await signer.getAddress();
@@ -173,7 +166,7 @@ export default function Home() {
 
       <Navbar setSigner={setSigner} signer={signer} />
 
-      {/* --- HERO SECTION --- */}
+     
       <section className="pt-32 pb-16 px-6 text-center max-w-5xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-900/20 border border-green-500/30 text-green-400 text-xs font-bold mb-6">
@@ -194,11 +187,11 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* --- THE TRUST DASHBOARD --- */}
+    
       <div id="app" className="py-20 bg-gradient-to-b from-black to-green-950/20 border-y border-white/5">
         <main className="max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-8">
 
-          {/* LEFT: INPUT & LOGS */}
+        
           <div className="lg:col-span-7 space-y-6">
             <div className="glass-panel p-8 rounded-2xl relative overflow-hidden">
               <h2 className="text-2xl font-bold mb-2 flex items-center gap-2">
@@ -240,10 +233,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* RIGHT: LIVE DATA FEED */}
+        
           <div className="lg:col-span-5 space-y-6">
 
-            {/* 1. TRUST SCORE CARD */}
+            
             <div className="glass-panel p-6 rounded-2xl flex justify-between items-center border border-white/5 relative overflow-hidden">
               <div className="absolute right-0 top-0 p-4 opacity-10">
                 <Shield size={80} />
@@ -262,7 +255,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 2. FAIR VALUE TRACKER */}
+           
             <div className="glass-panel p-6 rounded-2xl border border-white/5">
               <div className="flex justify-between items-center mb-4">
                 <h3 className="font-bold flex items-center gap-2"><BarChart3 size={18} className="text-blue-400" /> Oracle Feed (Yahoo Finance)</h3>
@@ -271,7 +264,7 @@ export default function Home() {
               <div className="flex justify-between items-end">
                 <div>
                   <p className="text-xs text-gray-500">Benchmark Yield (10Y)</p>
-                  {/* FIX: Added .toFixed(2) to clean up the number */}
+                  
                   <p className="text-xl font-mono">{aiData ? Number(aiData.oracle_data.live_yield).toFixed(2) + "%" : "---"}</p>
                 </div>
                 <div className="text-right">
@@ -281,7 +274,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* 3. MINTING SECTION */}
             <div className={`glass-panel p-8 rounded-2xl border-t-4 ${aiData ? 'border-t-green-500 neon-glow' : 'border-t-gray-800'}`}>
               <div className="flex justify-between items-start mb-6">
                 <h2 className="text-xl font-bold">Asset Creation</h2>
@@ -321,7 +313,7 @@ export default function Home() {
         </main>
       </div>
 
-      {/* --- LIVE REGISTRY --- */}
+   
       <section className="py-20 max-w-7xl mx-auto px-6">
         <div className="flex items-center gap-3 mb-8">
           <div className="bg-blue-500/10 p-2 rounded-lg"><Globe className="text-blue-400" /></div>
@@ -358,7 +350,7 @@ export default function Home() {
         )}
       </section>
 
-      {/* --- DOCS --- */}
+     
       <section className="py-20 bg-white/5 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-3xl font-bold mb-10 text-center">The 5 Pillars of Verification</h2>
