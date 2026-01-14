@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/.next",
+  "rewrites": [
+    {
+      "source": "/api/analyze",
+      "destination": "https://verifychain-rwa.onrender.com/analyze_and_oracle"
+    },
+    {
+      "source": "/api/health",
+      "destination": "https://verifychain-rwa.onrender.com/health"
+    }
+  ]
+}
