@@ -12,13 +12,12 @@ import toast, { Toaster } from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Terminal from "../components/Terminal";
 
-const CONTRACT_ADDRESS = "0xb7aD889a0B6CD22c6869764219eB66443C70d839";
+const CONTRACT_ADDRESS = "0xE715acd4c54F030d021b7147c20786623fFf482a";
 
 const ABI = [
- 
-  "function createAsset(string _name, string _isin, uint256 _faceValue, string _ipfsHash) public",
-  "function nextBondId() public view returns (uint256)",
-  "function bonds(uint256) public view returns (string name, string isin, uint256 faceValue, uint256 currentYield, uint256 lastUpdate, string ipfsHash, bool isActive)"
+    "function createAsset(string _name, string _isin, uint256 _faceValue, uint256 _initialYield, string _ipfsHash) public",
+    "function nextBondId() public view returns (uint256)",
+    "function bonds(uint256) public view returns (string name, string isin, uint256 faceValue, uint256 currentYield, uint256 lastUpdate, string ipfsHash, bool isActive)"
 ];
 
 export default function Home() {
@@ -127,12 +126,14 @@ export default function Home() {
       addLog("Requesting Wallet Signature...");
 
     
-      const tx = await contract.createAsset(
-        aiData.ai_analysis.bond_name || "Unknown Bond",
-        aiData.ai_analysis.isin || "UNKN",
-        aiData.ai_analysis.face_value_amount || 1000000, 
-        "QmMockHashForDemo" 
-      );
+    
+const tx = await contract.createAsset(
+  aiData.ai_analysis.bond_name || "Unknown Bond",
+  aiData.ai_analysis.isin || "UNKN",
+  aiData.ai_analysis.face_value_amount || 1000000,
+  Math.floor(aiData.oracle_data.live_yield * 100), 
+  "QmMockHashForDemo"
+);
 
       addLog(`Transaction Sent: ${tx.hash}`);
       await tx.wait();
@@ -341,7 +342,7 @@ export default function Home() {
                   </div>
                   <div className="text-center">
                     <p className="text-[10px] text-gray-500 uppercase">Yield</p>
-                    <p className="font-bold text-blue-400">{bond.yield}%</p>
+                    <p className="font-bold text-blue-400">{(bond.yield / 100).toFixed(2)}%</p>
                   </div>
                 </div>
               </div>

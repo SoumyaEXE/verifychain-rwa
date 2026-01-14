@@ -15,7 +15,7 @@ app = Flask(__name__)
 CORS(app)
 
 CELO_RPC = "https://forno.celo-sepolia.celo-testnet.org" 
-CONTRACT_ADDRESS = "0xb7aD889a0B6CD22c6869764219eB66443C70d839"
+CONTRACT_ADDRESS = "0xE715acd4c54F030d021b7147c20786623fFf482a"
 PRIVATE_KEY = os.getenv("PRIVATE_KEY") 
 
 CONTRACT_ABI_JSON = """
@@ -59,6 +59,11 @@ CONTRACT_ABI_JSON = """
 			{
 				"internalType": "uint256",
 				"name": "_faceValue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_initialYield",
 				"type": "uint256"
 			},
 			{
