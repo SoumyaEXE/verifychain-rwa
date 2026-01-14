@@ -4,4 +4,6 @@ PyPDF2
 groq
 requests
 python-dotenv
+yfinance
+web3
 gunicorn
