@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Wallet, ShieldCheck, Power } from "lucide-react";
+import { Icon } from "@iconify/react";
+import Link from "next/link";
 import toast from "react-hot-toast";
-
 
 declare global {
   interface Window {
@@ -44,49 +44,73 @@ export default function Navbar({ setSigner, signer }: any) {
   }, []);
 
   return (
-    <nav className="fixed top-0 w-full z-50 border-b border-white/10 bg-black/90 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+    <nav className="fixed top-3 sm:top-5 left-0 right-0 z-50 flex justify-center px-3 sm:px-4">
+      <div 
+        className="relative flex items-center gap-1 w-full max-w-5xl bg-gradient-to-b from-zinc-900/90 to-zinc-950/90 backdrop-blur-2xl border border-white/[0.12] rounded-2xl p-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.6),0_0_0_1px_rgba(255,255,255,0.03)_inset]"
+      >
+        {/* Ambient glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-transparent to-cyan-500/10 rounded-2xl blur-xl opacity-60"></div>
         
-        <div className="flex items-center gap-3">
-          <div className="bg-green-500/10 p-2 rounded-lg border border-green-500/20 shadow-[0_0_15px_rgba(0,255,0,0.3)]">
-            <ShieldCheck className="text-green-400 w-6 h-6" />
+        {/* Logo */}
+        <Link 
+          href="/" 
+          className="relative flex items-center gap-2 sm:gap-2.5 px-2 sm:px-4 py-2 rounded-xl hover:bg-white/[0.08] transition-all duration-300 group"
+        >
+          <div className="relative w-6 h-6 sm:w-7 sm:h-7">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg group-hover:shadow-[0_0_20px_rgba(52,211,153,0.5)] transition-shadow duration-300"></div>
+            <div className="relative w-full h-full flex items-center justify-center">
+              <Icon icon="lucide:shield" className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-black" />
+            </div>
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-wider text-white">VERIFYCHAIN<span className="text-green-500">.RWA</span></h1>
-            <p className="text-[10px] text-gray-400 uppercase tracking-widest">Institutional Trust Layer</p>
+            <span className="font-semibold text-xs sm:text-sm text-white block leading-tight">VerifiChain</span>
+            <span className="hidden sm:block text-[9px] font-mono text-emerald-400 tracking-wider uppercase opacity-70">Trust Engine</span>
           </div>
+        </Link>
+        
+        <div className="hidden md:flex items-center mx-2">
+          <div className="w-px h-6 bg-white/[0.08]"></div>
+        </div>
+        
+        {/* Network Status */}
+        <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
+          <div className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </div>
+          <span className="text-[11px] text-zinc-400 font-medium">Celo Sepolia</span>
         </div>
 
-        
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-gray-300">
-            <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#00ff00]"></span>
-            Celo Sepolia
-          </div>
-          
-          {!address ? (
-            <button
-              onClick={connectWallet}
-              className="flex items-center gap-2 px-6 py-2 rounded-full font-bold transition-all bg-white text-black hover:bg-green-400 hover:scale-105"
-            >
-              <Wallet size={18} />
-              Connect Wallet
-            </button>
-          ) : (
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-900/20 border border-green-500/50 text-green-400 font-mono text-sm">
-                 {address.slice(0, 6)}...{address.slice(-4)}
-              </div>
-              <button 
-                onClick={disconnectWallet}
-                className="p-2 rounded-full bg-red-500/10 border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white transition-all"
-                title="Disconnect Wallet"
-              >
-                <Power size={18} />
-              </button>
+        <div className="flex-1"></div>
+
+        {/* Wallet Connection */}
+        {!address ? (
+          <button
+            onClick={connectWallet}
+            className="relative bg-gradient-to-b from-white to-zinc-100 text-zinc-900 px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-[13px] font-semibold hover:from-emerald-400 hover:to-emerald-500 hover:text-black transition-all duration-300 hover:shadow-[0_0_24px_rgba(52,211,153,0.4)] overflow-hidden group"
+          >
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></span>
+            <span className="relative flex items-center gap-1.5 sm:gap-2">
+              <Icon icon="lucide:wallet" className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline">Connect Wallet</span>
+              <span className="xs:hidden">Connect</span>
+            </span>
+          </button>
+        ) : (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono text-xs sm:text-sm">
+              <Icon icon="cryptocurrency:celo" className="w-3.5 h-3.5" />
+              {address.slice(0, 6)}...{address.slice(-4)}
             </div>
-          )}
-        </div>
+            <button 
+              onClick={disconnectWallet}
+              className="relative p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all duration-300"
+              title="Disconnect Wallet"
+            >
+              <Icon icon="lucide:power" className="w-4 h-4" />
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

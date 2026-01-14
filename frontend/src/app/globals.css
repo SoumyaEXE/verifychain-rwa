@@ -221,6 +221,14 @@ code, .font-mono {
   letter-spacing: var(--tracking-widest);
 }
 
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-body {
+  font-family: var(--font-body);
+}
+
 .font-interface {
   font-family: var(--font-interface);
 }
