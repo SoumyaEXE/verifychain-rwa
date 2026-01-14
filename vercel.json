@@ -1,9 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
+  "rootDirectory": "frontend",
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "devCommand": "npm run dev",
+  "outputDirectory": ".next",
   "regions": ["bom1"],
   "headers": [
     {
@@ -66,6 +68,5 @@
       "destination": "/home",
       "permanent": true
     }
-  ],
-  "crons": []
+  ]
 }
