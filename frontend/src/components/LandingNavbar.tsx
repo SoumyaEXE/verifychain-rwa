@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
-import { ethers } from "ethers";
+import Image from "next/image";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import {
@@ -11,32 +11,43 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { ShieldCheck, BookOpen, Globe, Database, Network } from "lucide-react";
+
+declare global {
+  interface Window {
+    ethereum?: {
+      selectedAddress?: string;
+      request?: (args: { method: string }) => Promise<string[]>;
+    };
+  }
+}
 
 export default function LandingNavbar() {
   const [address, setAddress] = useState("");
   const navRef = useRef(null);
 
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
     if (typeof window !== 'undefined' && window.ethereum) {
         try {
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const signer = await provider.getSigner();
-            const _addr = await signer.getAddress();
+            const accounts = await window.ethereum.request?.({ method: 'eth_requestAccounts' });
+            const _addr = accounts?.[0] || '';
             setAddress(_addr);
         } catch (e) {
             console.error(e);
         }
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined' && window.ethereum && window.ethereum.selectedAddress) {
-      connectWallet();
+      // Use timeout to avoid calling setState synchronously in effect
+      const timeoutId = setTimeout(() => {
+        connectWallet();
+      }, 0);
+      return () => clearTimeout(timeoutId);
     }
-  }, []);
+  }, [connectWallet]);
 
   useGSAP(() => {
     gsap.fromTo(navRef.current, 
@@ -114,9 +125,11 @@ export default function LandingNavbar() {
                 <div className="flex items-center gap-3 bg-[#161B33] rounded-full pl-3 pr-1 py-1 border border-[#2A3150]">
                     <span className="font-mono text-[10px] text-[#A8B2D1]">{address.slice(0, 6)}...{address.slice(-4)}</span>
                     <div className="rounded-full overflow-hidden w-6 h-6 bg-black border border-[#2A3150]">
-                            <img 
+                            <Image 
                             src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${address}`} 
                             alt="avatar"
+                            width={24}
+                            height={24}
                             className="w-full h-full object-cover"
                             />
                     </div>

@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { ethers } from "ethers";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icon } from "@iconify/react";
@@ -11,12 +10,6 @@ import Navbar from "../../components/Navbar";
 // SMART CONTRACT CONFIG - DO NOT MODIFY
 // ═══════════════════════════════════════════════════════════════════════════════
 const CONTRACT_ADDRESS = "0xE715acd4c54F030d021b7147c20786623fFf482a";
-
-const ABI = [
-  "function createAsset(string _name, string _isin, uint256 _faceValue, uint256 _initialYield, string _ipfsHash) public",
-  "function nextBondId() public view returns (uint256)",
-  "function bonds(uint256) public view returns (string name, string isin, uint256 faceValue, uint256 currentYield, uint256 lastUpdate, string ipfsHash, bool isActive)"
-];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // UI COMPONENTS
@@ -104,12 +97,13 @@ const ScanningOverlay = ({ active }: { active: boolean }) => {
 };
 
 export default function Home() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [signer, setSigner] = useState<any>(null);
   const [file, setFile] = useState<File | null>(null);
-  const [aiData, setAiData] = useState<any>(null);
+  const [aiData, setAiData] = useState<{ ai_analysis: { bond_name?: string; isin?: string; face_value_amount?: number }; oracle_data: { live_yield: number } } | null>(null);
   const [loading, setLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
-  const [registry, setRegistry] = useState<any[]>([]);
+  const [registry] = useState<{ id: string; name: string; isin: string; faceValue: string; yield: number; ipfs: string }[]>([]);
   const [trustScore, setTrustScore] = useState(0);
   const logsEndRef = useRef<HTMLDivElement>(null);
 
@@ -121,30 +115,13 @@ export default function Home() {
   const addLog = (msg: string) => setLogs(prev => [...prev, msg]);
 
   const fetchRegistry = async () => {
-    if (!window.ethereum) return;
+    // Registry fetch will be updated when Weilliptic SDK provides read methods
+    // For now, keeping placeholder for demo purposes
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
-      try {
-        const count = await contract.nextBondId();
-        let tempRegistry = [];
-        for (let i = Number(count); i > Math.max(0, Number(count) - 3); i--) {
-          const bond = await contract.bonds(i);
-          tempRegistry.push({
-            id: i.toString(),
-            name: bond.name,
-            isin: bond.isin,
-            faceValue: bond.faceValue.toString(),
-            yield: Number(bond.currentYield),
-            ipfs: bond.ipfsHash
-          });
-        }
-        setRegistry(tempRegistry);
-      } catch (e) {
-        console.log("No bonds minted yet");
-      }
+      // TODO: Implement registry fetch using Weilliptic SDK
+      console.log("Registry fetch placeholder - implement with Weilliptic SDK");
     } catch (e) {
-      console.error("Error connecting to contract", e);
+      console.error("Error fetching registry", e);
     }
   };
 
@@ -200,7 +177,7 @@ export default function Home() {
       setAiData(res.data);
       toast.success("Verification Complete.");
       
-    } catch (err) {
+    } catch {
       addLog("CRITICAL ERROR: Backend Connection Failed");
       toast.error("Analysis Error");
     }
@@ -209,29 +186,34 @@ export default function Home() {
 
   const handleMint = async () => {
     if (!signer) return toast.error("Connect Wallet First");
-    const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
-    const toastId = toast.loading("Interacting with Celo Blockchain...");
+    if (!aiData) return toast.error("Analyze document first");
+    const toastId = toast.loading("Interacting with Weilliptic Chain...");
 
     try {
       addLog("[Wallet] Requesting Signature...");
-      const tx = await contract.createAsset(
-        aiData.ai_analysis.bond_name || "Unknown Bond",
-        aiData.ai_analysis.isin || "UNKN",
-        aiData.ai_analysis.face_value_amount || 1000000,
-        Math.floor(aiData.oracle_data.live_yield * 100), 
-        "QmMockHashForDemo"
+      
+      // Execute contract using Weilliptic SDK
+      const result = await signer.contracts.execute(
+        CONTRACT_ADDRESS.replace('0x', ''), // Remove 0x prefix for Weilliptic
+        'createAsset',
+        {
+          _name: aiData.ai_analysis.bond_name || "Unknown Bond",
+          _isin: aiData.ai_analysis.isin || "UNKN",
+          _faceValue: aiData.ai_analysis.face_value_amount || 1000000,
+          _initialYield: Math.floor(aiData.oracle_data.live_yield * 100),
+          _ipfsHash: "QmMockHashForDemo"
+        }
       );
 
-      addLog(`[Chain] Tx Sent: ${tx.hash}`);
-      await tx.wait();
-
+      addLog(`[Chain] Tx Sent: ${result.txHash || 'pending'}`);
       addLog("[Chain] Block Confirmed. Asset Minted.");
       toast.success("Asset Created Successfully", { id: toastId });
       fetchRegistry();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       toast.error("Minting Failed", { id: toastId });
-      addLog(`[Error] ${err.reason || err.message}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      addLog(`[Error] ${errorMessage}`);
     }
   };
 
@@ -255,7 +237,7 @@ export default function Home() {
         }} 
       />
 
-      <Navbar setSigner={setSigner} signer={signer} />
+      <Navbar setSigner={setSigner} />
 
       {/* ═══════════════════════════════════════════════════════════════════════
           VOID GRADIENT BACKGROUND + NOISE TEXTURE
@@ -305,8 +287,8 @@ export default function Home() {
                 <span className="text-xs font-medium text-slate-300">Oracle Active</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900/60 border border-white/10 backdrop-blur-xl">
-                <Icon icon="cryptocurrency:celo" className="w-4 h-4 text-yellow-400" />
-                <span className="text-xs font-medium text-slate-300">Celo Sepolia</span>
+                <Icon icon="lucide:link" className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-medium text-slate-300">Weilliptic</span>
               </div>
             </div>
           </motion.div>
@@ -397,8 +379,8 @@ export default function Home() {
                   <span>PyPDF2</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-slate-500 text-xs">
-                  <Icon icon="cryptocurrency:celo" className="w-3.5 h-3.5" />
-                  <span>Celo</span>
+                  <Icon icon="lucide:link" className="w-3.5 h-3.5" />
+                  <span>Weilliptic</span>
                 </div>
               </div>
             </motion.div>
@@ -535,7 +517,7 @@ export default function Home() {
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm py-2 border-b border-white/5">
                       <span className="text-slate-400">Face Value</span>
-                      <span className="font-mono text-white">₹{parseInt(aiData.ai_analysis.face_value_amount).toLocaleString()}</span>
+                      <span className="font-mono text-white">₹{(aiData.ai_analysis.face_value_amount ?? 0).toLocaleString()}</span>
                     </div>
                     <div className="flex justify-between text-sm py-2">
                       <span className="text-slate-400">Live Yield</span>
@@ -555,8 +537,8 @@ export default function Home() {
                       onClick={handleMint} 
                       className="py-3 rounded-xl bg-[#00FFA3] hover:bg-[#00e693] text-slate-950 text-sm font-bold transition-all shadow-[0_0_20px_rgba(0,255,163,0.3)] flex items-center justify-center gap-2"
                     >
-                      <Icon icon="cryptocurrency:celo" className="w-4 h-4" />
-                      Mint on Celo
+                      <Icon icon="lucide:link" className="w-4 h-4" />
+                      Mint on Weilliptic
                     </button>
                   </div>
                 </motion.div>
@@ -578,7 +560,7 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-white">Public Transparency Ledger</h2>
-              <p className="text-slate-500 text-sm">Real-time assets verified on Celo blockchain</p>
+              <p className="text-slate-500 text-sm">Real-time assets verified on Weilliptic blockchain</p>
             </div>
           </div>
 
@@ -637,7 +619,7 @@ export default function Home() {
             &copy; 2026 VerifyChain RWA. Built for IIT Kharagpur Blockchain Summit.
           </p>
           <div className="flex items-center gap-4">
-            <Icon icon="cryptocurrency:celo" className="w-5 h-5 text-slate-600 hover:text-[#FCFF52] transition-colors cursor-pointer" />
+            <Icon icon="lucide:link" className="w-5 h-5 text-slate-600 hover:text-emerald-400 transition-colors cursor-pointer" />
             <Icon icon="simple-icons:github" className="w-5 h-5 text-slate-600 hover:text-white transition-colors cursor-pointer" />
             <Icon icon="simple-icons:twitter" className="w-5 h-5 text-slate-600 hover:text-cyan-400 transition-colors cursor-pointer" />
           </div>

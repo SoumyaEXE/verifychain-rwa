@@ -18,7 +18,7 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Celo-Sepolia-FCFF52?style=for-the-badge&logo=celo&logoColor=black" alt="Celo Sepolia" />
+  <img src="https://img.shields.io/badge/Weilliptic-Chain-00FFA3?style=for-the-badge&logo=chainlink&logoColor=black" alt="Weilliptic" />
   <img src="https://img.shields.io/badge/AI-Llama_3.3-0467DF?style=for-the-badge&logo=meta&logoColor=white" alt="Llama 3.3" />
   <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js&logoColor=white" alt="Next.js" />
   <img src="https://img.shields.io/badge/Solidity-0.8.20-363636?style=for-the-badge&logo=solidity&logoColor=white" alt="Solidity" />
@@ -55,7 +55,7 @@ Government bonds are sovereign-backed, safe investment instruments—yet **retai
 │  • Llama 3.3 extracts ISIN, Face Value, Maturity               │
 │  • Yahoo Finance provides live 10Y Treasury yield               │
 │  • Smart contract enforces Proof-of-Reserve limits              │
-│  • Celo blockchain ensures immutable audit trail                │
+│  • Weilliptic blockchain ensures immutable audit trail          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -76,7 +76,7 @@ flowchart TB
         D --> E[Yahoo Finance Oracle]
     end
     
-    subgraph Blockchain["⛓️ Celo Sepolia"]
+    subgraph Blockchain["⛓️ Weilliptic Chain"]
         F[VerifyChainRWA Contract]
         G[Asset Registry]
         H[Proof-of-Reserve]
@@ -89,7 +89,7 @@ flowchart TB
     
     style Frontend fill:#0f172a,stroke:#00FFA3,color:#fff
     style Backend fill:#1e293b,stroke:#06b6d4,color:#fff
-    style Blockchain fill:#0c0a09,stroke:#FCFF52,color:#fff
+    style Blockchain fill:#0c0a09,stroke:#00FFA3,color:#fff
 ```
 
 ### Verification Pipeline
@@ -146,13 +146,13 @@ classDiagram
 ## 🛠️ Tech Stack
 
 | Layer | Technology | Purpose |
-|-------|------------|---------|
+|-------|------------|--------|
 | **Frontend** | Next.js 15, Tailwind CSS, Framer Motion | Responsive UI with glassmorphism design |
-| **Blockchain** | Solidity 0.8.20, ethers.js v6 | Smart contracts & wallet integration |
+| **Blockchain** | Solidity 0.8.20, @weilliptic/weil-sdk | Smart contracts & wallet integration |
 | **AI Agent** | Llama 3.3 70B (Groq) | Document analysis & data extraction |
 | **Oracle** | Yahoo Finance API | Real-time treasury yield feeds |
 | **Backend** | Flask, PyPDF2 | PDF processing & API gateway |
-| **Network** | Celo Sepolia Testnet | Low-cost, mobile-first blockchain |
+| **Network** | Weilliptic Chain | Next-gen secure blockchain |
 
 ---
 
@@ -186,8 +186,8 @@ classDiagram
 
 - Node.js 18+
 - Python 3.9+
-- MetaMask wallet
-- Celo Sepolia testnet CELO ([Faucet](https://faucet.celo.org/alfajores))
+- Weil Wallet or compatible wallet
+- Weilliptic testnet tokens
 
 ### Installation
 

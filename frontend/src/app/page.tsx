@@ -15,7 +15,6 @@ export default function LandingPage() {
   const heroRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const transitionRef = useRef<HTMLDivElement>(null);
-  const [currentTime, setCurrentTime] = useState("");
   const [isTransitioning, setIsTransitioning] = useState(false);
   const router = useRouter();
 
@@ -55,13 +54,8 @@ export default function LandingPage() {
   };
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setCurrentTime(now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
+    // Time update effect - removed as currentTime state was unused
+    return;
   }, []);
 
   useGSAP(() => {
@@ -84,20 +78,20 @@ export default function LandingPage() {
   const stats = [
     { value: "$2.1T", label: "RWA Market", sub: "By 2030 (projected)" },
     { value: "92%", label: "Trust Score", sub: "AI verification" },
-    { value: "<$0.01", label: "Gas Fees", sub: "On Celo L2" },
+    { value: "<$0.01", label: "Gas Fees", sub: "On Weilliptic" },
     { value: "Real-time", label: "Oracle Feed", sub: "Yahoo Finance" },
   ];
 
   const features = [
     { icon: FileCheck, title: "Proof of Reserve", desc: "AI-powered document analysis extracts issuer, face value, maturity & CUSIP from bond PDFs." },
     { icon: Zap, title: "Live Oracle Feed", desc: "Real-time 10Y Treasury yield from Yahoo Finance anchors fair value on-chain." },
-    { icon: Shield, title: "Celo Settlement", desc: "Mint verified RWA tokens on Celo Sepolia with immutable proof of authenticity." },
+    { icon: Shield, title: "Weilliptic Settlement", desc: "Mint verified RWA tokens on Weilliptic with immutable proof of authenticity." },
   ];
 
   const steps = [
     { step: "01", title: "Upload", desc: "Upload your bond certificate PDF for AI analysis.", code: "// Bond PDF → IPFS → AI Analysis" },
     { step: "02", title: "Verify", desc: "Llama 3.3 extracts metadata & generates trust score.", code: "// Groq AI + Yahoo Finance Oracle" },
-    { step: "03", title: "Mint", desc: "Create on-chain RWA token with verified proof.", code: "// Celo Sepolia → NFT Receipt" },
+    { step: "03", title: "Mint", desc: "Create on-chain RWA token with verified proof.", code: "// Weilliptic → NFT Receipt" },
   ];
 
   const footerLinks = [
@@ -183,7 +177,7 @@ export default function LandingPage() {
           <div className="overflow-hidden mb-4 sm:mb-6"><h1 className="hero-line text-[clamp(2.5rem,8vw,7rem)] font-display leading-[0.95] tracking-tight"><span className="text-zinc-500">real-world</span><span className="text-white italic ml-2 sm:ml-4">assets</span></h1></div>
           <div className="overflow-hidden mb-8 sm:mb-12"><h1 className="hero-line text-[clamp(2.5rem,8vw,7rem)] font-display leading-[0.95] tracking-tight"><span className="bg-gradient-to-r from-emerald-400 via-emerald-300 to-cyan-400 bg-clip-text text-transparent">with trust.</span></h1></div>
           <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 sm:gap-10 mb-12 sm:mb-20">
-            <p className="hero-sub text-base sm:text-lg md:text-xl text-zinc-400 max-w-xl leading-relaxed font-light">AI-powered verification for bonds and securities. Proof of Reserve meets on-chain transparency. <span className="text-white">Built on Celo. Verified by Llama 3.</span></p>
+            <p className="hero-sub text-base sm:text-lg md:text-xl text-zinc-400 max-w-xl leading-relaxed font-light">AI-powered verification for bonds and securities. Proof of Reserve meets on-chain transparency. <span className="text-white">Built on Weilliptic. Verified by Llama 3.</span></p>
             <div className="hero-cta flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               <Link href="/home" className="group flex items-center justify-center gap-3 bg-white text-black px-6 sm:px-8 py-3 sm:py-4 rounded-full font-semibold hover:bg-emerald-400 transition-all w-full sm:w-auto text-sm sm:text-base"><span>Try Demo</span><ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" /></Link>
               <Link href="/home" className="flex items-center justify-center gap-2 text-zinc-400 hover:text-white transition-colors px-6 py-3 sm:py-4 w-full sm:w-auto text-sm sm:text-base"><span>How It Works</span><ChevronRight className="w-4 h-4" /></Link>
@@ -197,7 +191,7 @@ export default function LandingPage() {
 
       <div ref={marqueeRef} className="border-y border-zinc-800/50 bg-zinc-900/30 py-4 overflow-hidden">
         <div className="marquee-content flex items-center gap-12 whitespace-nowrap">
-          {[0, 1].map((i) => (<div key={i} className="flex items-center gap-12">{["PROOF OF RESERVE", "AI VERIFICATION", "ORACLE FEEDS", "CELO SETTLEMENT", "BOND TOKENIZATION"].map((item, j) => (<div key={j} className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div><span className="text-xs font-mono text-zinc-500 tracking-widest">{item}</span></div>))}</div>))}
+          {[0, 1].map((i) => (<div key={i} className="flex items-center gap-12">{["PROOF OF RESERVE", "AI VERIFICATION", "ORACLE FEEDS", "WEILLIPTIC SETTLEMENT", "BOND TOKENIZATION"].map((item, j) => (<div key={j} className="flex items-center gap-3"><div className="w-1.5 h-1.5 bg-emerald-400 rounded-full"></div><span className="text-xs font-mono text-zinc-500 tracking-widest">{item}</span></div>))}</div>))}
         </div>
       </div>
 
@@ -232,10 +226,10 @@ export default function LandingPage() {
           <div className="bg-gradient-to-br from-zinc-900 via-zinc-900 to-emerald-950/30 border border-zinc-800 rounded-2xl sm:rounded-3xl p-8 sm:p-10 md:p-16">
             <div className="grid lg:grid-cols-2 gap-10 sm:gap-12 md:gap-16 items-center">
               <div>
-                <div className="reveal-item text-[10px] sm:text-xs font-mono text-emerald-400 tracking-widest mb-4 sm:mb-6">BUILT ON CELO</div>
+                <div className="reveal-item text-[10px] sm:text-xs font-mono text-emerald-400 tracking-widest mb-4 sm:mb-6">BUILT ON WEILLIPTIC</div>
                 <h2 className="reveal-item text-2xl sm:text-3xl md:text-4xl font-display text-white leading-tight mb-4 sm:mb-6">Carbon-negative settlement for real-world assets.</h2>
                 <p className="reveal-item text-sm sm:text-base text-zinc-400 leading-relaxed mb-6 sm:mb-8">Ultra-low gas fees make RWA tokenization accessible. Every verification is permanently anchored on-chain.</p>
-                <div className="reveal-item flex flex-wrap items-center gap-4 sm:gap-6"><div className="flex items-center gap-2"><Zap className="w-4 h-4 text-amber-400" /><span className="text-xs sm:text-sm text-zinc-400">Celo Sepolia</span></div><div className="flex items-center gap-2"><Globe2 className="w-4 h-4 text-emerald-400" /><span className="text-xs sm:text-sm text-zinc-400">Carbon negative</span></div></div>
+                <div className="reveal-item flex flex-wrap items-center gap-4 sm:gap-6"><div className="flex items-center gap-2"><Zap className="w-4 h-4 text-amber-400" /><span className="text-xs sm:text-sm text-zinc-400">Weilliptic</span></div><div className="flex items-center gap-2"><Globe2 className="w-4 h-4 text-emerald-400" /><span className="text-xs sm:text-sm text-zinc-400">Secure & Efficient</span></div></div>
               </div>
               <div className="reveal-item relative">
                 <div className="aspect-square bg-gradient-to-br from-emerald-500/5 to-transparent rounded-3xl border border-emerald-500/10 flex items-center justify-center">
@@ -264,13 +258,13 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between gap-12 mb-16">
             <div className="max-w-xs">
               <div className="flex items-center gap-3 mb-6"><div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl flex items-center justify-center"><Shield className="w-5 h-5 text-black" strokeWidth={2.5} /></div><div><div className="text-white font-display text-lg tracking-tight">VerifiChain</div><div className="text-emerald-400 text-[10px] font-mono tracking-widest -mt-1">TRUST LAYER</div></div></div>
-              <p className="text-sm text-zinc-500 leading-relaxed">The RWA trust layer. AI-powered verification for tokenized real-world assets on Celo.</p>
+              <p className="text-sm text-zinc-500 leading-relaxed">The RWA trust layer. AI-powered verification for tokenized real-world assets on Weilliptic.</p>
             </div>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
               {footerLinks.map((group, i) => (<div key={i}><div className="text-white font-semibold text-sm mb-4">{group.title}</div><ul className="space-y-3">{group.links.map((link, j) => (<li key={j}><Link href="#" className="text-zinc-500 text-sm hover:text-white transition-colors">{link}</Link></li>))}</ul></div>))}
             </div>
           </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-zinc-800/50 text-xs text-zinc-600"><div>2026 VerifiChain. Built on Celo.</div><div className="flex items-center gap-2"><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div><span className="text-zinc-500">All systems operational</span></div></div>
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 pt-8 border-t border-zinc-800/50 text-xs text-zinc-600"><div>2026 VerifiChain. Built on Weilliptic.</div><div className="flex items-center gap-2"><div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div><span className="text-zinc-500">All systems operational</span></div></div>
         </div>
       </footer>
 
@@ -323,7 +317,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-[11px] sm:text-xs font-mono text-zinc-500 mt-2">
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-              <span>Connecting to Celo Sepolia</span>
+              <span>Connecting to Weilliptic</span>
             </div>
             <span className="hidden sm:inline text-zinc-700">•</span>
             <div className="hidden sm:flex items-center gap-2">

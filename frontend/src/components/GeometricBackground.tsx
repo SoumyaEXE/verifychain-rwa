@@ -1,20 +1,31 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useRef, useMemo } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as THREE from "three";
 
-function LowPolyShape({ position, color, speed, rotationSpeed, type }: any) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface LowPolyShapeProps {
+  position: [number, number, number];
+  color: string;
+  speed: number;
+  rotationSpeed: number;
+  type: 'cube' | 'octahedron' | 'icosahedron';
+}
+
+function LowPolyShape({ position, color, speed, rotationSpeed, type }: LowPolyShapeProps) {
   const mesh = useRef<THREE.Mesh>(null);
+  const [initialRotation] = useState(() => ({
+    x: Math.random() * Math.PI,
+    y: Math.random() * Math.PI,
+  }));
   
-  // Randomize initial rotation
-  useMemo(() => {
+  // Set initial rotation in effect (not during render)
+  useEffect(() => {
     if (mesh.current) {
-        mesh.current.rotation.x = Math.random() * Math.PI;
-        mesh.current.rotation.y = Math.random() * Math.PI;
+      mesh.current.rotation.x = initialRotation.x;
+      mesh.current.rotation.y = initialRotation.y;
     }
-  }, []);
+  }, [initialRotation]);
 
   useFrame((state) => {
     if (!mesh.current) return;
