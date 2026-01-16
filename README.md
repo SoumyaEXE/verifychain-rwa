@@ -9,6 +9,10 @@
 </p>
 
 <p align="center">
+  <em>Blockchain-powered Real World Asset Verification Platform</em>
+</p>
+
+<p align="center">
   <a href="#features">Features</a> •
   <a href="#architecture">Architecture</a> •
   <a href="#tech-stack">Tech Stack</a> •
